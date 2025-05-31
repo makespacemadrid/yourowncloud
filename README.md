@@ -47,16 +47,18 @@ Sistema operativo:
 Activa actualizaciones automáticas críticas o periódicas (por ejemplo, cada 2 semanas).
 
 En Debian/Ubuntu:
-
+```
     sudo apt install unattended-upgrades
     sudo dpkg-reconfigure --priority=low unattended-upgrades
+```
+
 Contenedores:
 
 Usa Watchtower para actualizar imágenes Docker automáticamente.
 
 Ejemplo en docker-compose.yml:
 
-
+```
 watchtower:
   image: containrrr/watchtower
   volumes:
@@ -64,6 +66,8 @@ watchtower:
   environment:
     - WATCHTOWER_CLEANUP=true
     - WATCHTOWER_POLL_INTERVAL=86400  # cada 24h
+```
+
 
 3. 🔒 Seguridad de acceso
 Evita exponer servicios innecesarios: Usa redes privadas, VPNs como Tailscale o Zerotier.
