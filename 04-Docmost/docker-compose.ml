@@ -1,0 +1,41 @@
+services:
+  docmost:
+    image: docmost/docmost:latest
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_URL: 'https://docmost.midominio.com'
+      APP_SECRET: 'randomrandom23423423'
+      DATABASE_URL: 'postgresql://docmost:password@db-docmost:5432/docmost?schema=public'
+      REDIS_URL: 'redis://redis-docmost:6379'
+#      MAIL_DRIVER: 'smtp'
+#      SMTP_HOST: 'smtp.gmail.com'
+#      SMTP_PORT: 465
+#      SMTP_USERNAME: 'mail@gmail.com'
+#      SMTP_PASSWORD: 'passwot'
+#      SMTP_SECURE: true
+#      MAIL_FROM_ADDRESS: 'mail@gmail.com'
+#      MAIL_FROM_NAME: 'Name'
+
+    ports:
+      - "3300:3000"
+    restart: unless-stopped
+    volumes:
+      - './docmost_docmost/_data:/app/data/storage'
+
+  db-docmost:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: docmost
+      POSTGRES_USER: docmost
+      POSTGRES_PASSWORD: password
+    restart: unless-stopped
+    volumes:
+      - './docmost_db_data/_data:/var/lib/postgresql/data'
+
+  redis-docmost:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    volumes:
+      - './docmost_redis_data/_data:/data'

@@ -1,0 +1,66 @@
+services:
+
+# Actualizador DYNDNS
+  ddns:
+    image: qmcgaw/ddns-updater
+    networks:
+      - proxy
+    volumes:
+      - ./data/ddns:/updater/data
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+
+#Proxy reverso
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    networks:
+      - proxy
+    environment:
+      - DB_SQLITE_FILE="/data/database.sqlite"
+      - DISABLE_IPV6=true
+      - TZ=Europe/Madrid
+    volumes:
+      - ./data/proxy:/data
+      - ./data/letsencrypt:/etc/letsencrypt
+#    depends_on:
+#      - ddns
+
+#Estadisticas del proxy reverso
+  goaccess:
+    image: xavierh/goaccess-for-nginxproxymanager:latest
+    container_name: goaccess
+    restart: always
+    environment:
+        - TZ=Europe/Madrid
+        - SKIP_ARCHIVED_LOGS=False #optional
+#        - DEBUG=False #optional
+#        - BASIC_AUTH=False #optional
+#        - BASIC_AUTH_USERNAME=user #optional
+#        - BASIC_AUTH_PASSWORD=pass #optional
+#        - EXCLUDE_IPS=127.0.0.1 #optional - comma delimited list
+#        - LOG_TYPE=NPM #optional - more information below
+    ports:
+        - '7880:7880'
+    networks:
+      - proxy
+    volumes:
+        - ./data/proxy/logs:/opt/log
+
+#Monitor de servicios
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    volumes:
+      - ./data/kuma-data:/app/data
+    ports:
+      - 3001:3001  # <Host Port>:<Container Port>
+    restart: always
+
+networks:
+  proxy:

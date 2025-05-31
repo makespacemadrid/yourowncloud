@@ -1,0 +1,18 @@
+services:
+  # HomeAssistant
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    volumes:
+      # Local path where your home assistant config will be stored
+      - ./data/hass:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/bus/usb
+    restart: unless-stopped
+    network_mode: host
+#    depends_on:
+#      - mariadb
+    user: "${LOCAL_USER}:${LOCAL_USER}"
