@@ -12,7 +12,8 @@ Taller:
 - entrada @ tipo dns dinamico
 - cname de * a @
 - Configurar en el router el nat para los puertos 80 y 443
-- Instalar Docker
+- Instalar Docker:
+
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
     sudo apt install docker-compose-plugin
