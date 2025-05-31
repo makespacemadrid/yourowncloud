@@ -2,11 +2,11 @@ services:
   docmost:
     image: docmost/docmost:latest
     depends_on:
-      - db
-      - redis
+      - db-docmost
+      - redis-docmost
     environment:
       APP_URL: 'https://docmost.midominio.com'
-      APP_SECRET: 'randomrandom23423423'
+      APP_SECRET: 'randomrandom23423423randomrandom'
       DATABASE_URL: 'postgresql://docmost:password@db-docmost:5432/docmost?schema=public'
       REDIS_URL: 'redis://redis-docmost:6379'
 #      MAIL_DRIVER: 'smtp'

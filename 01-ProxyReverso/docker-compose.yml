@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
 
 #Proxy reverso
   proxy:
@@ -22,14 +24,32 @@ services:
     networks:
       - proxy
     environment:
-      - DB_SQLITE_FILE="/data/database.sqlite"
       - DISABLE_IPV6=true
       - TZ=Europe/Madrid
+      - DB_MYSQL_HOST=mariadb
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=proxman
+      - DB_MYSQL_PASSWORD=password
+      - DB_MYSQL_NAME=proxman
     volumes:
       - ./data/proxy:/data
       - ./data/letsencrypt:/etc/letsencrypt
-#    depends_on:
-#      - ddns
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:lts
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=proxman
+      - MYSQL_USER=proxman
+      - MYSQL_PASSWORD=password
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - ./data/proxy_db:/var/lib/mysql
 
 #Estadisticas del proxy reverso
   goaccess:
